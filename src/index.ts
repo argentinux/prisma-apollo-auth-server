@@ -4,16 +4,15 @@ import express from 'express'
 import { ApolloServer } from 'apollo-server-express'
 import { createSchema } from './schema'
 import { APP_PORT } from './config'
+import { AppContext, createContext } from './context'
 
 async function start() {
   const schema = await createSchema()
-  const context = {}
-
   const app = express()
 
   const apolloServer = new ApolloServer({
     schema,
-    context,
+    context: ({ req, res }): AppContext => createContext(req, res),
   })
 
   apolloServer.applyMiddleware({ app })
